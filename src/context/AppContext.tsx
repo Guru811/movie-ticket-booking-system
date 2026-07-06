@@ -27,7 +27,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [token, setToken] = useState<string | null>(localStorage.getItem('ticket_token'));
   const [movies, setMovies] = useState<Movie[]>([]);
   const [theatres, setTheatres] = useState<Theatre[]>([]);
-  const [selectedCity, setSelectedCity] = useState<string>('New York');
+  const [selectedCity, setSelectedCity] = useState<string>('Mumbai');
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const apiFetch = async (endpoint: string, options: RequestInit = {}) => {
