@@ -104,62 +104,61 @@ const INITIAL_THEATRES: Theatre[] = [
   {
     id: 't1',
     name: 'Starlight Multiplex',
-    city: 'New York',
-    address: '42nd Street, Times Square',
+    city: 'Mumbai',
+    address: 'Andheri West, Mumbai',
     screens: [
       {
         id: 's1',
         name: 'Screen 1 (IMAX)',
         rows: 8,
         cols: 10,
-        tierPrices: { vip: 25, platinum: 20, gold: 15, silver: 12 }
+        tierPrices: { vip: 500, platinum: 400, gold: 300, silver: 200 }
       },
       {
         id: 's2',
         name: 'Screen 2 (Dolby Cinema)',
         rows: 6,
         cols: 8,
-        tierPrices: { platinum: 18, gold: 14, silver: 10 }
+        tierPrices: { platinum: 350, gold: 280, silver: 180 }
       }
     ]
   },
   {
     id: 't2',
     name: 'Cinema Paradiso',
-    city: 'Los Angeles',
-    address: 'Sunset Boulevard, Hollywood',
+    city: 'Delhi',
+    address: 'Connaught Place, New Delhi',
     screens: [
       {
         id: 's3',
         name: 'Grand Theater',
         rows: 10,
         cols: 12,
-        tierPrices: { vip: 30, platinum: 22, gold: 16, silver: 12 }
+        tierPrices: { vip: 600, platinum: 450, gold: 320, silver: 220 }
       }
     ]
   },
   {
     id: 't3',
     name: 'Apex Cinema',
-    city: 'Chicago',
-    address: 'Michigan Avenue',
+    city: 'Bangalore',
+    address: 'MG Road, Bangalore',
     screens: [
       {
         id: 's4',
         name: 'Screen A',
         rows: 6,
         cols: 8,
-        tierPrices: { platinum: 16, gold: 12, silver: 9 }
+        tierPrices: { platinum: 320, gold: 250, silver: 180 }
       }
     ]
   }
 ];
 
 const INITIAL_COUPONS: Coupon[] = [
-  { id: 'c1', code: 'WELCOME10', discountType: 'percentage', value: 10, minPurchase: 20, isActive: true },
-  { id: 'c2', code: 'FLAT5', discountType: 'flat', value: 5, minPurchase: 30, isActive: true },
-  { id: 'c3', code: 'SUPER30', discountType: 'percentage', value: 30, minPurchase: 50, isActive: true }
-];
+  { id: 'c1', code: 'WELCOME10', discountType: 'percentage', value: 10, minPurchase: 300, isActive: true },
+  { id: 'c2', code: 'FLAT100', discountType: 'flat', value: 100, minPurchase: 400, isActive: true },
+  { id: 'c3', code: 'SUPER30', discountType: 'percentage', value: 30, minPurchase: 600, isActive: true }];
 
 export class Database {
   private static load(): DatabaseSchema {
@@ -232,7 +231,7 @@ export class Database {
                 screenId: screen.id,
                 date: dateStr,
                 time: showTimes[timeIdx],
-                ticketPrice: screen.tierPrices.gold || 15,
+                ticketPrice: screen.tierPrices.gold || 250,
                 bookedSeats: day === 0 ? ['A3', 'A4', 'B5'] : [], // pre-book some seats to show occupied state
                 totalSeats: screen.rows * screen.cols
               });
