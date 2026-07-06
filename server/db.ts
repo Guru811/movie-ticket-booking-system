@@ -159,101 +159,139 @@ const INITIAL_COUPONS: Coupon[] = [
 ];
 
 export class Database {
-  private static load(): DatabaseSchema {
-    if (!fs.existsSync(DB_FILE)) {
-      const defaultSchema: DatabaseSchema = {
-        users: [
-          // Preseed admin
-          {
-            id: 'admin',
-            name: 'System Admin',
-            email: 'admin@movies.com',
-            // Default password is 'admin123' hashed (we will store plaintext or compare simply for fallback, let's hash properly with bcryptjs!)
-            password: '$2a$10$Uq6N.w.tM88XgGvO4qWpPeKq3O2I6X85y4V7eI0vWzW.Bf7X6Vl9a', // bcrypt hash for 'admin123'
-            role: 'admin',
-            isVerified: true,
-            favourites: [],
-            createdAt: new Date().toISOString()
-          },
-          // Preseed user
-          {
-            id: 'user',
-            name: 'John Doe',
-            email: 'user@movies.com',
-            password: '$2a$10$Uq6N.w.tM88XgGvO4qWpPeKq3O2I6X85y4V7eI0vWzW.Bf7X6Vl9a', // bcrypt hash for 'admin123'
-            role: 'user',
-            isVerified: true,
-            favourites: ['m1', 'm3'],
-            createdAt: new Date().toISOString()
+  private static cache: DatabaseSchema | null = null;
+
+  private static getDefaultSchema(): DatabaseSchema {
+    const defaultSchema: DatabaseSchema = {
+      users: [
+        // Preseed admin
+        {
+          id: 'admin',
+          name: 'System Admin',
+          email: 'admin@movies.com',
+          password: '$2a$10$Uq6N.w.tM88XgGvO4qWpPeKq3O2I6X85y4V7eI0vWzW.Bf7X6Vl9a', // bcrypt hash for 'admin123'
+          role: 'admin',
+          isVerified: true,
+          favourites: [],
+          createdAt: new Date().toISOString()
+        },
+        // Preseed user
+        {
+          id: 'user',
+          name: 'John Doe',
+          email: 'user@movies.com',
+          password: '$2a$10$Uq6N.w.tM88XgGvO4qWpPeKq3O2I6X85y4V7eI0vWzW.Bf7X6Vl9a', // bcrypt hash for 'admin123'
+          role: 'user',
+          isVerified: true,
+          favourites: ['m1', 'm3'],
+          createdAt: new Date().toISOString()
+        }
+      ],
+      movies: INITIAL_MOVIES,
+      theatres: INITIAL_THEATRES,
+      shows: [],
+      bookings: [],
+      reviews: [
+        {
+          id: 'r1',
+          userId: 'user',
+          userName: 'John Doe',
+          movieId: 'm1',
+          rating: 5,
+          comment: 'Absolutely masterpiece! Visual design and audio design are out of this world.',
+          createdAt: new Date().toISOString()
+        }
+      ],
+      coupons: INITIAL_COUPONS
+    };
+
+    // Let's generate some shows for the next 7 days dynamically
+    const shows: Show[] = [];
+    const showTimes = ['11:00', '14:30', '18:00', '21:30'];
+    let showIdCounter = 1;
+
+    // Loop over theatres, screens, and movies to generate interesting shows
+    INITIAL_THEATRES.forEach(theatre => {
+      theatre.screens.forEach(screen => {
+        INITIAL_MOVIES.forEach((movie, mIdx) => {
+          // For the next 3 days
+          for (let day = 0; day < 3; day++) {
+            const d = new Date();
+            d.setDate(d.getDate() + day);
+            const dateStr = d.toISOString().split('T')[0];
+
+            // Pick one or two times
+            const timeIdx = (mIdx + day) % showTimes.length;
+            shows.push({
+              id: `sh${showIdCounter++}`,
+              movieId: movie.id,
+              theatreId: theatre.id,
+              screenId: screen.id,
+              date: dateStr,
+              time: showTimes[timeIdx],
+              ticketPrice: screen.tierPrices.gold || 15,
+              bookedSeats: day === 0 ? ['A3', 'A4', 'B5'] : [], // pre-book some seats to show occupied state
+              totalSeats: screen.rows * screen.cols
+            });
           }
-        ],
-        movies: INITIAL_MOVIES,
-        theatres: INITIAL_THEATRES,
-        shows: [],
-        bookings: [],
-        reviews: [
-          {
-            id: 'r1',
-            userId: 'user',
-            userName: 'John Doe',
-            movieId: 'm1',
-            rating: 5,
-            comment: 'Absolutely masterpiece! Visual design and audio design are out of this world.',
-            createdAt: new Date().toISOString()
-          }
-        ],
-        coupons: INITIAL_COUPONS
-      };
-
-      // Let's generate some shows for the next 7 days dynamically
-      const shows: Show[] = [];
-      const showTimes = ['11:00', '14:30', '18:00', '21:30'];
-      let showIdCounter = 1;
-
-      // Loop over theatres, screens, and movies to generate interesting shows
-      INITIAL_THEATRES.forEach(theatre => {
-        theatre.screens.forEach(screen => {
-          INITIAL_MOVIES.forEach((movie, mIdx) => {
-            // For the next 3 days
-            for (let day = 0; day < 3; day++) {
-              const d = new Date();
-              d.setDate(d.getDate() + day);
-              const dateStr = d.toISOString().split('T')[0];
-
-              // Pick one or two times
-              const timeIdx = (mIdx + day) % showTimes.length;
-              shows.push({
-                id: `sh${showIdCounter++}`,
-                movieId: movie.id,
-                theatreId: theatre.id,
-                screenId: screen.id,
-                date: dateStr,
-                time: showTimes[timeIdx],
-                ticketPrice: screen.tierPrices.gold || 15,
-                bookedSeats: day === 0 ? ['A3', 'A4', 'B5'] : [], // pre-book some seats to show occupied state
-                totalSeats: screen.rows * screen.cols
-              });
-            }
-          });
         });
       });
+    });
 
-      defaultSchema.shows = shows;
+    defaultSchema.shows = shows;
+    return defaultSchema;
+  }
 
-      fs.writeFileSync(DB_FILE, JSON.stringify(defaultSchema, null, 2));
+  private static load(): DatabaseSchema {
+    if (this.cache) {
+      return this.cache;
+    }
+
+    if (!fs.existsSync(DB_FILE)) {
+      const defaultSchema = this.getDefaultSchema();
+      try {
+        fs.writeFileSync(DB_FILE, JSON.stringify(defaultSchema, null, 2));
+      } catch (err) {
+        console.warn('Could not write initial db.json file, continuing with in-memory database', err);
+      }
+      this.cache = defaultSchema;
       return defaultSchema;
     }
 
     try {
-      return JSON.parse(fs.readFileSync(DB_FILE, 'utf-8'));
+      const fileData = fs.readFileSync(DB_FILE, 'utf-8');
+      const data = JSON.parse(fileData);
+      
+      // Safety check: if parsed database is invalid or empty of core keys, merge with default
+      if (!data || !Array.isArray(data.movies) || data.movies.length === 0) {
+        console.warn('Loaded db.json is invalid or has no movies, resetting to default schema');
+        const defaultSchema = this.getDefaultSchema();
+        try {
+          fs.writeFileSync(DB_FILE, JSON.stringify(defaultSchema, null, 2));
+        } catch (err) {
+          console.warn('Could not write reset db.json file, continuing in memory', err);
+        }
+        this.cache = defaultSchema;
+        return defaultSchema;
+      }
+
+      this.cache = data;
+      return data;
     } catch (e) {
-      console.error('Error reading DB_FILE, recreating', e);
-      return { users: [], movies: [], theatres: [], shows: [], bookings: [], reviews: [], coupons: [] };
+      console.error('Error reading/parsing DB_FILE, falling back to preseeded schema', e);
+      const defaultSchema = this.getDefaultSchema();
+      this.cache = defaultSchema;
+      return defaultSchema;
     }
   }
 
   private static save(data: DatabaseSchema): void {
-    fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
+    this.cache = data;
+    try {
+      fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
+    } catch (e) {
+      console.warn('Failed to write updates to db.json file, updates saved to in-memory cache only', e);
+    }
   }
 
   // Generic query operations
