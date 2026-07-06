@@ -2,9 +2,9 @@ import express from 'express';
    import cors from 'cors';
    import morgan from 'morgan';
    import bcrypt from 'bcryptjs';
-   import { Database } from './db';
-   import { authenticateToken, isAdmin, generateToken, AuthenticatedRequest } from './auth';
-   import { Show, Booking, Review, Coupon, Movie, Theatre } from '../src/types';
+   import { Database } from './db.js';
+   import { authenticateToken, isAdmin, generateToken, AuthenticatedRequest } from './auth.js';
+   import { Show, Booking, Review, Coupon, Movie, Theatre } from '../src/types.js';
 
    const app = express();
    app.use(cors());
