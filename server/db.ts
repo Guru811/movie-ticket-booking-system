@@ -1,7 +1,7 @@
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
-import { User, Movie, Theatre, Show, Booking, Review, Coupon } from '../src/types';
+import { User, Movie, Theatre, Show, Booking, Review, Coupon } from '../src/types.js';
 
 const DB_FILE = process.env.VERCEL
   ? path.join(os.tmpdir(), 'db.json')
