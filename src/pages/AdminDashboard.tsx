@@ -38,7 +38,7 @@ export const AdminDashboard: React.FC = () => {
   const [theatreForm, setTheatreForm] = useState({
     name: '', city: '', address: '',
     screenName: 'Screen 1 (IMAX)', rows: 8, cols: 10,
-    vipPrice: 25, platinumPrice: 20, goldPrice: 15, silverPrice: 12
+    vipPrice: 350, platinumPrice: 280, goldPrice: 250, silverPrice: 180
   });
 
   const [showShowForm, setShowShowForm] = useState(false);
@@ -95,7 +95,7 @@ export const AdminDashboard: React.FC = () => {
       };
 
       if (editingMovie) {
-        await apiFetch(`/api/movies/${editingMovie.id}`, {
+        await apiFetch(`/api/movies/₹{editingMovie.id}`, {
           method: 'PUT',
           body: JSON.stringify(payload)
         });
@@ -139,7 +139,7 @@ export const AdminDashboard: React.FC = () => {
   const handleDeleteMovieClick = async (movieId: string) => {
     if (!confirm('Are you sure you want to delete this movie?')) return;
     try {
-      await apiFetch(`/api/movies/${movieId}`, { method: 'DELETE' });
+      await apiFetch(`/api/movies/₹{movieId}`, { method: 'DELETE' });
       setMessage('Movie deleted.');
       await refreshData();
     } catch (e: any) {
@@ -161,7 +161,7 @@ export const AdminDashboard: React.FC = () => {
     setMessage('');
     try {
       const screen: Screen = {
-        id: `s_${Math.random().toString(36).substr(2, 5)}`,
+        id: `s_₹{Math.random().toString(36).substr(2, 5)}`,
         name: theatreForm.screenName,
         rows: Number(theatreForm.rows),
         cols: Number(theatreForm.cols),
@@ -189,9 +189,9 @@ export const AdminDashboard: React.FC = () => {
       await refreshData();
       setShowTheatreForm(false);
       setTheatreForm({
-        name: '', city: 'New York', address: '',
+        name: '', city: 'Mumbai', address: '',
         screenName: 'Screen 1 (IMAX)', rows: 8, cols: 10,
-        vipPrice: 25, platinumPrice: 20, goldPrice: 15, silverPrice: 12
+        vipPrice: 350, platinumPrice: 280, goldPrice: 250, silverPrice: 180
       });
     } catch (e: any) {
       setErrorMsg(e.message || 'Failed to create theatre.');
@@ -226,7 +226,7 @@ export const AdminDashboard: React.FC = () => {
   const handleDeleteShow = async (showId: string) => {
     if (!confirm('Cancel/Delete this scheduled show?')) return;
     try {
-      await apiFetch(`/api/shows/${showId}`, { method: 'DELETE' });
+      await apiFetch(`/api/shows/₹{showId}`, { method: 'DELETE' });
       setMessage('Show deleted.');
       await loadAdminData();
     } catch (e: any) {
@@ -259,7 +259,7 @@ export const AdminDashboard: React.FC = () => {
 
   const handleDeleteCoupon = async (id: string) => {
     try {
-      await apiFetch(`/api/coupons/${id}`, { method: 'DELETE' });
+      await apiFetch(`/api/coupons/₹{id}`, { method: 'DELETE' });
       setMessage('Coupon deleted.');
       await loadAdminData();
     } catch (e: any) {
@@ -270,7 +270,7 @@ export const AdminDashboard: React.FC = () => {
   const handleCancelBooking = async (id: string) => {
     if (!confirm('Refund transaction and cancel seats?')) return;
     try {
-      await apiFetch(`/api/bookings/${id}/cancel`, { method: 'PUT' });
+      await apiFetch(`/api/bookings/₹{id}/cancel`, { method: 'PUT' });
       setMessage('Booking cancelled and refunded.');
       await loadAdminData();
     } catch (e: any) {
@@ -312,7 +312,7 @@ export const AdminDashboard: React.FC = () => {
               setMessage('');
               setErrorMsg('');
             }}
-            className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
+            className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ₹{
               activeTab === tab
                 ? 'bg-amber-500/10 border border-amber-500/30 text-amber-400'
                 : 'bg-transparent text-zinc-500 hover:text-zinc-300'
@@ -351,7 +351,7 @@ export const AdminDashboard: React.FC = () => {
           <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
             <div className="bg-zinc-900/60 border border-zinc-850 p-4 rounded-2xl space-y-1.5">
               <span className="text-[10px] uppercase font-bold text-zinc-500 tracking-wider">Gross Income</span>
-              <h3 className="text-xl font-black text-amber-400 font-mono">${stats.totalRevenue}</h3>
+              <h3 className="text-xl font-black text-amber-400 font-mono">₹{stats.totalRevenue}</h3>
               <p className="text-[9px] text-emerald-400 flex items-center gap-1">
                 <TrendingUp size={10} /> +14% vs last week
               </p>
@@ -383,7 +383,7 @@ export const AdminDashboard: React.FC = () => {
             
             {/* Sales performance trend (LineChart) */}
             <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-5 space-y-4 shadow-xl">
-              <h4 className="text-xs font-black uppercase text-zinc-400 tracking-wider">Daily Sales Performance ($)</h4>
+              <h4 className="text-xs font-black uppercase text-zinc-400 tracking-wider">Daily Sales Performance (₹)</h4>
               <div className="h-64 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={charts.dailySales} margin={{ left: -10, right: 10, top: 10 }}>
@@ -415,7 +415,7 @@ export const AdminDashboard: React.FC = () => {
 
             {/* Monthly Earnings Expansion (AreaChart) */}
             <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-5 space-y-4 shadow-xl lg:col-span-2">
-              <h4 className="text-xs font-black uppercase text-zinc-400 tracking-wider">Monthly Gross Earnings Growth trajectory ($)</h4>
+              <h4 className="text-xs font-black uppercase text-zinc-400 tracking-wider">Monthly Gross Earnings Growth trajectory (₹)</h4>
               <div className="h-64 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={charts.monthlyRevenue} margin={{ left: -10, top: 10 }}>
@@ -668,11 +668,11 @@ export const AdminDashboard: React.FC = () => {
                     onChange={(e) => setTheatreForm({ ...theatreForm, city: e.target.value })}
                     className="w-full bg-zinc-950 border border-zinc-800 focus:border-zinc-700 text-zinc-200 rounded-xl px-3 py-2 focus:outline-none"
                   >
-                    <option value="New York">New York</option>
-                    <option value="Los Angeles">Los Angeles</option>
-                    <option value="Chicago">Chicago</option>
-                    <option value="San Francisco">San Francisco</option>
-                    <option value="Miami">Miami</option>
+                    <option value="Mumbai">Mumbai</option>
+                    <option value="Delhi">Delhi</option>
+                    <option value="Bangalore">Bangalore</option>
+                    <option value="Hyderabad">Hyderabad</option>
+                    <option value="Chennai">Chennai</option>
                   </select>
                 </div>
                 <div className="space-y-1 sm:col-span-2">
@@ -718,7 +718,7 @@ export const AdminDashboard: React.FC = () => {
 
                 <div className="grid grid-cols-4 gap-2 sm:col-span-2 pt-2">
                   <div className="space-y-1">
-                    <label className="text-[10px] text-purple-400 font-extrabold">VIP Ticket ($)</label>
+                    <label className="text-[10px] text-purple-400 font-extrabold">VIP Ticket (₹)</label>
                     <input
                       type="number" value={theatreForm.vipPrice}
                       onChange={(e) => setTheatreForm({ ...theatreForm, vipPrice: Number(e.target.value) })}
@@ -726,7 +726,7 @@ export const AdminDashboard: React.FC = () => {
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] text-indigo-400 font-extrabold">Platinum ($)</label>
+                    <label className="text-[10px] text-indigo-400 font-extrabold">Platinum (₹)</label>
                     <input
                       type="number" value={theatreForm.platinumPrice}
                       onChange={(e) => setTheatreForm({ ...theatreForm, platinumPrice: Number(e.target.value) })}
@@ -734,7 +734,7 @@ export const AdminDashboard: React.FC = () => {
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] text-amber-400 font-extrabold">Gold ($)</label>
+                    <label className="text-[10px] text-amber-400 font-extrabold">Gold (₹)</label>
                     <input
                       type="number" value={theatreForm.goldPrice}
                       onChange={(e) => setTheatreForm({ ...theatreForm, goldPrice: Number(e.target.value) })}
@@ -742,7 +742,7 @@ export const AdminDashboard: React.FC = () => {
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] text-zinc-400 font-extrabold">Silver ($)</label>
+                    <label className="text-[10px] text-zinc-400 font-extrabold">Silver (₹)</label>
                     <input
                       type="number" value={theatreForm.silverPrice}
                       onChange={(e) => setTheatreForm({ ...theatreForm, silverPrice: Number(e.target.value) })}
@@ -789,7 +789,7 @@ export const AdminDashboard: React.FC = () => {
                     <div key={screen.id} className="bg-zinc-950 border border-zinc-850 p-2.5 rounded-xl text-[10px] space-y-1">
                       <span className="font-bold text-zinc-300 block">{screen.name}</span>
                       <span className="text-zinc-500 block">Dimensions: {screen.rows} rows x {screen.cols} cols ({screen.rows * screen.cols} seats)</span>
-                      <span className="text-amber-400/80 font-semibold block">VIP: ${screen.tierPrices.vip || '-'} • Gold: ${screen.tierPrices.gold || '-'}</span>
+                      <span className="text-amber-400/80 font-semibold block">VIP: ₹{screen.tierPrices.vip || '-'} • Gold: ₹{screen.tierPrices.gold || '-'}</span>
                     </div>
                   ))}
                 </div>
@@ -904,7 +904,7 @@ export const AdminDashboard: React.FC = () => {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-zinc-500 font-bold block">Base Ticket Price ($)</label>
+                  <label className="text-zinc-500 font-bold block">Base Ticket Price (₹)</label>
                   <input
                     type="number" required value={showForm.ticketPrice}
                     onChange={(e) => setShowForm({ ...showForm, ticketPrice: Number(e.target.value) })}
@@ -958,7 +958,7 @@ export const AdminDashboard: React.FC = () => {
                         <td className="px-5 py-3 font-semibold text-zinc-300">
                           {show.date} @ {show.time}
                         </td>
-                        <td className="px-5 py-3 font-mono text-amber-400 font-extrabold">${show.ticketPrice}</td>
+                        <td className="px-5 py-3 font-mono text-amber-400 font-extrabold">₹{show.ticketPrice}</td>
                         <td className="px-5 py-3 text-right">
                           <button
                             onClick={() => handleDeleteShow(show.id)}
@@ -1013,11 +1013,11 @@ export const AdminDashboard: React.FC = () => {
                           <div className="text-[10px] font-mono text-amber-400 font-bold">Seats: {b.seats.join(', ')}</div>
                         </td>
                         <td className="px-5 py-3 text-zinc-400">
-                          {b.show ? `${b.show.date} @ ${b.show.time}` : b.createdAt.split('T')[0]}
+                          {b.show ? `₹{b.show.date} @ ₹{b.show.time}` : b.createdAt.split('T')[0]}
                         </td>
                         <td className="px-5 py-3 text-right font-mono font-black text-white">
-                          ${b.totalAmount}
-                          {b.discountAmount > 0 && <div className="text-[9px] text-emerald-400 font-bold">(-${b.discountAmount})</div>}
+                          ₹{b.totalAmount}
+                          {b.discountAmount > 0 && <div className="text-[9px] text-emerald-400 font-bold">(-₹{b.discountAmount})</div>}
                         </td>
                         <td className="px-5 py-3 text-right">
                           {b.bookingStatus === 'cancelled' ? (
@@ -1084,7 +1084,7 @@ export const AdminDashboard: React.FC = () => {
                     className="w-full bg-zinc-950 border border-zinc-800 focus:border-zinc-700 text-zinc-200 rounded-xl px-3 py-2"
                   >
                     <option value="percentage">Percentage (%)</option>
-                    <option value="flat">Flat Cash Discount ($)</option>
+                    <option value="flat">Flat Cash Discount (₹)</option>
                   </select>
                 </div>
                 <div className="space-y-1">
@@ -1096,7 +1096,7 @@ export const AdminDashboard: React.FC = () => {
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-zinc-500 font-bold block">Minimum Purchase Requirement ($)</label>
+                  <label className="text-zinc-500 font-bold block">Minimum Purchase Requirement (₹)</label>
                   <input
                     type="number" required value={couponForm.minPurchase}
                     onChange={(e) => setCouponForm({ ...couponForm, minPurchase: Number(e.target.value) })}
@@ -1133,9 +1133,9 @@ export const AdminDashboard: React.FC = () => {
                     </span>
                   </div>
                   <p className="text-[10px] text-zinc-400 font-semibold pt-1">
-                    Discount: <span className="text-zinc-200">{coupon.discountType === 'percentage' ? `${coupon.value}% Off` : `$${coupon.value} Off`}</span>
+                    Discount: <span className="text-zinc-200">{coupon.discountType === 'percentage' ? `₹{coupon.value}% Off` : `₹₹{coupon.value} Off`}</span>
                   </p>
-                  <p className="text-[9px] text-zinc-500 font-mono">Min Ticket purchase: ${coupon.minPurchase}</p>
+                  <p className="text-[9px] text-zinc-500 font-mono">Min Ticket purchase: ₹{coupon.minPurchase}</p>
                 </div>
 
                 <button
