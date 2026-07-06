@@ -1,8 +1,11 @@
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 import { User, Movie, Theatre, Show, Booking, Review, Coupon } from '../src/types';
 
-const DB_FILE = path.join(process.cwd(), 'db.json');
+const DB_FILE = process.env.VERCEL
+  ? path.join(os.tmpdir(), 'db.json')
+  : path.join(process.cwd(), 'db.json');
 
 export interface DatabaseSchema {
   users: User[];
