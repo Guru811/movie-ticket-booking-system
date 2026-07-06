@@ -95,7 +95,7 @@ export const AdminDashboard: React.FC = () => {
       };
 
       if (editingMovie) {
-        await apiFetch(`/api/movies/₹{editingMovie.id}`, {
+        await apiFetch(`/api/movies/${editingMovie.id}`, {
           method: 'PUT',
           body: JSON.stringify(payload)
         });
@@ -139,7 +139,7 @@ export const AdminDashboard: React.FC = () => {
   const handleDeleteMovieClick = async (movieId: string) => {
     if (!confirm('Are you sure you want to delete this movie?')) return;
     try {
-      await apiFetch(`/api/movies/₹{movieId}`, { method: 'DELETE' });
+      await apiFetch(`/api/movies/${movieId}`, { method: 'DELETE' });
       setMessage('Movie deleted.');
       await refreshData();
     } catch (e: any) {
@@ -161,7 +161,7 @@ export const AdminDashboard: React.FC = () => {
     setMessage('');
     try {
       const screen: Screen = {
-        id: `s_₹{Math.random().toString(36).substr(2, 5)}`,
+        id: `s_${Math.random().toString(36).substr(2, 5)}`,
         name: theatreForm.screenName,
         rows: Number(theatreForm.rows),
         cols: Number(theatreForm.cols),
@@ -226,7 +226,7 @@ export const AdminDashboard: React.FC = () => {
   const handleDeleteShow = async (showId: string) => {
     if (!confirm('Cancel/Delete this scheduled show?')) return;
     try {
-      await apiFetch(`/api/shows/₹{showId}`, { method: 'DELETE' });
+      await apiFetch(`/api/shows/${showId}`, { method: 'DELETE' });
       setMessage('Show deleted.');
       await loadAdminData();
     } catch (e: any) {
@@ -259,7 +259,7 @@ export const AdminDashboard: React.FC = () => {
 
   const handleDeleteCoupon = async (id: string) => {
     try {
-      await apiFetch(`/api/coupons/₹{id}`, { method: 'DELETE' });
+      await apiFetch(`/api/coupons/${id}`, { method: 'DELETE' });
       setMessage('Coupon deleted.');
       await loadAdminData();
     } catch (e: any) {
@@ -270,7 +270,7 @@ export const AdminDashboard: React.FC = () => {
   const handleCancelBooking = async (id: string) => {
     if (!confirm('Refund transaction and cancel seats?')) return;
     try {
-      await apiFetch(`/api/bookings/₹{id}/cancel`, { method: 'PUT' });
+      await apiFetch(`/api/bookings/${id}/cancel`, { method: 'PUT' });
       setMessage('Booking cancelled and refunded.');
       await loadAdminData();
     } catch (e: any) {
@@ -312,7 +312,7 @@ export const AdminDashboard: React.FC = () => {
               setMessage('');
               setErrorMsg('');
             }}
-            className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ₹{
+            className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
               activeTab === tab
                 ? 'bg-amber-500/10 border border-amber-500/30 text-amber-400'
                 : 'bg-transparent text-zinc-500 hover:text-zinc-300'
@@ -1013,7 +1013,7 @@ export const AdminDashboard: React.FC = () => {
                           <div className="text-[10px] font-mono text-amber-400 font-bold">Seats: {b.seats.join(', ')}</div>
                         </td>
                         <td className="px-5 py-3 text-zinc-400">
-                          {b.show ? `₹{b.show.date} @ ₹{b.show.time}` : b.createdAt.split('T')[0]}
+                          {b.show ? `${b.show.date} @ ${b.show.time}` : b.createdAt.split('T')[0]}
                         </td>
                         <td className="px-5 py-3 text-right font-mono font-black text-white">
                           ₹{b.totalAmount}
@@ -1133,7 +1133,7 @@ export const AdminDashboard: React.FC = () => {
                     </span>
                   </div>
                   <p className="text-[10px] text-zinc-400 font-semibold pt-1">
-                    Discount: <span className="text-zinc-200">{coupon.discountType === 'percentage' ? `₹{coupon.value}% Off` : `₹₹{coupon.value} Off`}</span>
+                    Discount: <span className="text-zinc-200">{coupon.discountType === 'percentage' ? `${coupon.value}% Off` : `₹${coupon.value} Off`}</span>
                   </p>
                   <p className="text-[9px] text-zinc-500 font-mono">Min Ticket purchase: ₹{coupon.minPurchase}</p>
                 </div>
