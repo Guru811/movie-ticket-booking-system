@@ -286,7 +286,7 @@ export const MovieDetails: React.FC<MovieDetailsProps> = ({ movie, onBack, onOpe
                                     <Clock size={11} className="text-amber-400" /> {show.time}
                                   </span>
                                   <span className="text-[9px] text-zinc-500 font-semibold mt-1">
-                                    {screen?.name.split(' ')[0]} • ${show.ticketPrice}
+                                    {screen?.name.split(' ')[0]} • ₹{show.ticketPrice}
                                   </span>
                                   <span className={`text-[8px] font-extrabold uppercase mt-0.5 ${
                                     isSoldOut ? 'text-rose-500' : seatsRemaining < 10 ? 'text-amber-500' : 'text-emerald-500'
