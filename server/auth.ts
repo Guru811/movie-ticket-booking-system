@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
-import { Database } from './db';
-import { User } from '../src/types';
+import { Database } from './db.js';
+import { User } from '../src/types.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'movie-ticket-booking-fallback-secret-9876543210';
 
