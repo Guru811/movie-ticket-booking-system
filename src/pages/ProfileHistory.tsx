@@ -200,7 +200,7 @@ export const ProfileHistory: React.FC<ProfileHistoryProps> = ({ onSelectMovie })
                         <Clock size={11} className="text-zinc-600" /> Showtime: {b.show?.time || '18:00'}
                       </span>
                       <span className="font-mono text-zinc-400 font-bold">Seats: {b.seats.join(', ')}</span>
-                      <span className="font-mono text-zinc-450">Paid amount: ${b.totalAmount}</span>
+                      <span className="font-mono text-zinc-450">Paid amount: ₹{b.totalAmount}</span>
                     </div>
 
                     {/* Actions panel */}
