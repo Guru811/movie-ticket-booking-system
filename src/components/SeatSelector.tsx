@@ -68,9 +68,9 @@ export const SeatSelector: React.FC<SeatSelectorProps> = ({
     if (!couponCode.trim()) return;
     setCouponError('');
     try {
-      const coupon: Coupon = await apiFetch(`/api/coupons/validate/${couponCode.trim()}`);
+      const coupon: Coupon = await apiFetch(`/api/coupons/validate/₹{couponCode.trim()}`);
       if (baseTotal < coupon.minPurchase) {
-        setCouponError(`Min purchase of $${coupon.minPurchase} required for this coupon.`);
+        setCouponError(`Min purchase of ₹₹{coupon.minPurchase} required for this coupon.`);
         setAppliedCoupon(null);
       } else {
         setAppliedCoupon(coupon);
@@ -125,7 +125,7 @@ export const SeatSelector: React.FC<SeatSelectorProps> = ({
                 {/* Seats */}
                 <div className="flex gap-2">
                   {cols.map((col) => {
-                    const seatId = `${row}${col}`;
+                    const seatId = `₹{row}₹{col}`;
                     const isBooked = show.bookedSeats.includes(seatId);
                     const isSelected = selectedSeats.includes(seatId);
                     const tier = getSeatTier(row);
@@ -149,8 +149,8 @@ export const SeatSelector: React.FC<SeatSelectorProps> = ({
                         key={seatId}
                         disabled={isBooked}
                         onClick={() => handleSeatClick(seatId)}
-                        className={`w-8 h-8 rounded-lg text-[10px] font-semibold transition-all flex items-center justify-center cursor-pointer ${btnColor}`}
-                        title={`${seatId} (${tier.toUpperCase()} - $${getSeatPrice(seatId)})`}
+                        className={`w-8 h-8 rounded-lg text-[10px] font-semibold transition-all flex items-center justify-center cursor-pointer ₹{btnColor}`}
+                        title={`₹{seatId} (₹{tier.toUpperCase()} - ₹₹{getSeatPrice(seatId)})`}
                       >
                         {col}
                       </button>
@@ -182,25 +182,25 @@ export const SeatSelector: React.FC<SeatSelectorProps> = ({
           {screen.tierPrices.vip && (
             <div className="flex items-center gap-1.5">
               <span className="w-3.5 h-3.5 rounded bg-purple-950/40 border border-purple-500/40" />
-              <span>VIP (${screen.tierPrices.vip})</span>
+              <span>VIP (₹{screen.tierPrices.vip})</span>
             </div>
           )}
           {screen.tierPrices.platinum && (
             <div className="flex items-center gap-1.5">
               <span className="w-3.5 h-3.5 rounded bg-indigo-950/40 border border-indigo-500/40" />
-              <span>Platinum (${screen.tierPrices.platinum})</span>
+              <span>Platinum (₹{screen.tierPrices.platinum})</span>
             </div>
           )}
           {screen.tierPrices.gold && (
             <div className="flex items-center gap-1.5">
               <span className="w-3.5 h-3.5 rounded bg-amber-950/40 border border-amber-500/40" />
-              <span>Gold (${screen.tierPrices.gold})</span>
+              <span>Gold (₹{screen.tierPrices.gold})</span>
             </div>
           )}
           {screen.tierPrices.silver && (
             <div className="flex items-center gap-1.5">
               <span className="w-3.5 h-3.5 rounded bg-zinc-800 border border-zinc-700/50" />
-              <span>Silver (${screen.tierPrices.silver})</span>
+              <span>Silver (₹{screen.tierPrices.silver})</span>
             </div>
           )}
         </div>
@@ -237,7 +237,7 @@ export const SeatSelector: React.FC<SeatSelectorProps> = ({
                 {selectedSeats.map((seat) => (
                   <div key={seat} className="flex justify-between items-center text-[10px] text-zinc-400 font-medium">
                     <span>Seat {seat} ({getSeatTier(seat.substring(0, 1)).toUpperCase()})</span>
-                    <span className="font-mono text-zinc-200">${getSeatPrice(seat)}</span>
+                    <span className="font-mono text-zinc-200">₹{getSeatPrice(seat)}</span>
                   </div>
                 ))}
               </div>
@@ -284,7 +284,7 @@ export const SeatSelector: React.FC<SeatSelectorProps> = ({
                     <span className="font-bold">Code applied: {appliedCoupon.code}</span>
                   </div>
                   <span className="font-mono font-bold">
-                    {appliedCoupon.discountType === 'percentage' ? `-${appliedCoupon.value}%` : `-$${appliedCoupon.value}`}
+                    {appliedCoupon.discountType === 'percentage' ? `-₹{appliedCoupon.value}%` : `-₹₹{appliedCoupon.value}`}
                   </span>
                 </div>
               )}
@@ -303,17 +303,17 @@ export const SeatSelector: React.FC<SeatSelectorProps> = ({
           <div className="space-y-1.5">
             <div className="flex items-center justify-between text-xs text-zinc-400 font-medium">
               <span>Ticket Subtotal</span>
-              <span className="font-mono text-zinc-200">${baseTotal}</span>
+              <span className="font-mono text-zinc-200">₹{baseTotal}</span>
             </div>
             {discountAmount > 0 && (
               <div className="flex items-center justify-between text-xs text-emerald-400 font-semibold">
                 <span>Discount Deduction</span>
-                <span className="font-mono">-${discountAmount}</span>
+                <span className="font-mono">-₹{discountAmount}</span>
               </div>
             )}
             <div className="flex items-center justify-between text-sm font-black text-white">
               <span>Final Payable</span>
-              <span className="font-mono text-amber-400 text-lg">${finalTotal}</span>
+              <span className="font-mono text-amber-400 text-lg">₹{finalTotal}</span>
             </div>
           </div>
 
@@ -333,7 +333,7 @@ export const SeatSelector: React.FC<SeatSelectorProps> = ({
             <button
               disabled={selectedSeats.length === 0 || isSubmitting}
               onClick={handleBook}
-              className={`flex-[2] bg-gradient-to-r from-amber-400 via-rose-500 to-rose-600 hover:from-amber-300 hover:via-rose-400 hover:to-rose-500 text-zinc-950 font-black py-2.5 rounded-xl text-xs transition-all shadow-md shadow-rose-500/10 flex items-center justify-center gap-2 transform active:scale-95 cursor-pointer ${
+              className={`flex-[2] bg-gradient-to-r from-amber-400 via-rose-500 to-rose-600 hover:from-amber-300 hover:via-rose-400 hover:to-rose-500 text-zinc-950 font-black py-2.5 rounded-xl text-xs transition-all shadow-md shadow-rose-500/10 flex items-center justify-center gap-2 transform active:scale-95 cursor-pointer ₹{
                 selectedSeats.length === 0 ? 'opacity-40 cursor-not-allowed transform-none' : ''
               }`}
             >
