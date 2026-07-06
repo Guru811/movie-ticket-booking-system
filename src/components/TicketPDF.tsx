@@ -95,7 +95,7 @@ export const TicketPDF: React.FC<TicketPDFProps> = ({
               </div>
               <div className="space-y-0.5">
                 <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider block">Amount Paid</span>
-                <span className="font-mono font-bold text-zinc-100">${booking.totalAmount}</span>
+                <span className="font-mono font-bold text-zinc-100">₹{booking.totalAmount}</span>
               </div>
             </div>
 
