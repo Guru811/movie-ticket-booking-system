@@ -19,7 +19,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentPage, onOpenA
     setDropdownOpen(false);
   };
 
-  const cities = ['New York', 'Los Angeles', 'Chicago', 'San Francisco', 'Miami'];
+  const cities = ['Mumbai', 'Delhi', 'Bangalore', 'Hyderabad', 'Chennai'];
 
   return (
     <header id="navbar-header" className="sticky top-0 z-50 backdrop-blur-xl bg-[#040406]/65 border-b border-white/10">
